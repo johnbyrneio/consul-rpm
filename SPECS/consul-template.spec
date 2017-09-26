@@ -1,7 +1,7 @@
 %if 0%{?_version:1}
 %define         _verstr      %{_version}
 %else
-%define         _verstr      0.18.1
+%define         _verstr      0.19.0
 %endif
 
 Name:           consul-template
@@ -38,8 +38,8 @@ consul-template watches a series of templates on the file system, writing new ch
 %install
 mkdir -p %{buildroot}/%{_bindir}
 cp consul-template %{buildroot}/%{_bindir}
-mkdir -p %{buildroot}/%{_sysconfdir}/%{name}
-cp %{SOURCE4} %{buildroot}/%{_sysconfdir}/%{name}/consul-template.json-dist
+mkdir -p %{buildroot}/%{_sysconfdir}/%{name}.d
+cp %{SOURCE4} %{buildroot}/%{_sysconfdir}/%{name}.d/consul-template.json-dist
 mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
 cp %{SOURCE1} %{buildroot}/%{_sysconfdir}/sysconfig/%{name}
 mkdir -p %{buildroot}/%{_sharedstatedir}/%{name}
@@ -87,8 +87,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir %attr(750, root, consul-template) %{_sysconfdir}/%{name}
-%attr(640, root, consul-template) %{_sysconfdir}/%{name}/consul-template.json-dist
+%dir %attr(750, root, consul-template) %{_sysconfdir}/%{name}.d
+%attr(640, root, consul-template) %{_sysconfdir}/%{name}.d/consul-template.json-dist
 %dir %attr(750, consul-template, consul-template) %{_sharedstatedir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %if 0%{?fedora} >= 14 || 0%{?rhel} >= 7
@@ -103,8 +103,11 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Thu Feb 9 2017 Hema Shivkumar <hshivakuma@gannett.com>
-- Bumped version to 0.18.1
+* Tue Aug 22 2017 mh <mh@immerda.ch> - 0.19.0-1
+- Bumped version to 0.19.0
+* Wed Apr 05 2017 mh <mh@immerda.ch>
+- Bumped version to 0.18.2
+- remove legacy location /etc/consul-template/
 * Wed Sep 28 2016 Andy Bohne <andy@andrewbohne.com>
 - Bumped version to 0.16.0
 * Thu Jun 30 2016 Paul Lussier <pllsaph@gmail.com>

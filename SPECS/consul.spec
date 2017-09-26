@@ -1,7 +1,7 @@
 %if 0%{?_version:1}
 %define         _verstr      %{_version}
 %else
-%define         _verstr      0.7.1
+%define         _verstr      0.9.2
 %endif
 
 Name:           consul
@@ -16,10 +16,8 @@ Source0:        https://releases.hashicorp.com/%{name}/%{version}/%{name}_%{vers
 Source1:        %{name}.sysconfig
 Source2:        %{name}.service
 Source3:        %{name}.init
-Source4:        https://releases.hashicorp.com/%{name}/%{version}/%{name}_%{version}_web_ui.zip
-Source5:        %{name}.json
-Source6:        %{name}-ui.json
-Source7:        %{name}.logrotate
+Source4:        %{name}.json
+Source5:        %{name}.logrotate
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %if 0%{?fedora} >= 14 || 0%{?rhel} >= 7
@@ -30,10 +28,6 @@ Requires:       logrotate
 %endif
 Requires(pre): shadow-utils
 
-%package ui
-Summary: Consul Web UI
-Requires: consul = %{version}
-BuildArch: noarch
 
 %description
 Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
@@ -44,23 +38,17 @@ Consul provides several key features:
  - Key/Value Storage - A flexible key/value store enables storing dynamic configuration, feature flagging, coordination, leader election and more. The simple HTTP API makes it easy to use anywhere.
  - Multi-Datacenter - Consul is built to be datacenter aware, and can support any number of regions without complex configuration.
 
-%description ui
-Consul comes with support for a beautiful, functional web UI. The UI can be used for viewing all services and nodes, viewing all health checks and their current status, and for reading and setting key/value data. The UI automatically supports multi-datacenter.
-
 %prep
-%setup -q -c -b 4
+%setup -q -c
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
 cp consul %{buildroot}/%{_bindir}
-mkdir -p %{buildroot}/%{_sysconfdir}/%{name}
-cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/%{name}/consul.json-dist
-cp %{SOURCE6} %{buildroot}/%{_sysconfdir}/%{name}/
+mkdir -p %{buildroot}/%{_sysconfdir}/%{name}.d
+cp %{SOURCE4} %{buildroot}/%{_sysconfdir}/%{name}.d/consul.json-dist
 mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
 cp %{SOURCE1} %{buildroot}/%{_sysconfdir}/sysconfig/%{name}
 mkdir -p %{buildroot}/%{_sharedstatedir}/%{name}
-mkdir -p %{buildroot}/%{_datadir}/%{name}-ui
-cp -r index.html static %{buildroot}/%{_prefix}/share/%{name}-ui
 
 %if 0%{?fedora} >= 14 || 0%{?rhel} >= 7
 mkdir -p %{buildroot}/%{_unitdir}
@@ -69,7 +57,7 @@ cp %{SOURCE2} %{buildroot}/%{_unitdir}/
 mkdir -p %{buildroot}/%{_initrddir}
 mkdir -p %{buildroot}/%{_sysconfdir}/logrotate.d
 cp %{SOURCE3} %{buildroot}/%{_initrddir}/consul
-cp %{SOURCE7} %{buildroot}/%{_sysconfdir}/logrotate.d/%{name}
+cp %{SOURCE5} %{buildroot}/%{_sysconfdir}/logrotate.d/%{name}
 %endif
 
 %pre
@@ -105,8 +93,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir %attr(750, root, consul) %{_sysconfdir}/%{name}
-%attr(640, root, consul) %{_sysconfdir}/%{name}/consul.json-dist
+%dir %attr(750, root, consul) %{_sysconfdir}/%{name}.d
+%attr(640, root, consul) %{_sysconfdir}/%{name}.d/consul.json-dist
 %dir %attr(750, consul, consul) %{_sharedstatedir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %if 0%{?fedora} >= 14 || 0%{?rhel} >= 7
@@ -117,19 +105,48 @@ rm -rf %{buildroot}
 %endif
 %attr(755, root, root) %{_bindir}/consul
 
-%files ui
-%config(noreplace) %attr(-, root, consul) %{_prefix}/share/%{name}-ui
-%attr(640, root, consul) %{_sysconfdir}/%{name}/consul-ui.json
 
 
 %doc
 
 
 %changelog
-* Mon Dec 12 2016 Brian Lieberman
+* Fri Aug 18 2017 leeuwenrjj leeuwenrjj@gmail.com
+- Bump version to 0.9.2
+- Fix issue with prep
+
+* Tue Jul 25 2017 atumasov multibutterbread@gmail.com
+- Bump version to 0.9.0
+- Remove outdated UI package https://github.com/hashicorp/consul/blob/master/CHANGELOG.md#090-july-20-2017
+
+* Mon Apr 24 2017 mh <mh@immerda.ch>
+- Bump to 0.8.1
+- Fix init script to check for http port to be listening
+
+* Wed Apr 05 2017 mh <mh@immerda.ch>
+- Bump to 0.8.0
+- remove legacy location /etc/consul/
+
+* Tue Feb 21 2017 Rumba <ice4o@hotmail.com>
+- Bump to 0.7.5
+
+* Wed Feb 8 2017 Jasper Lievisse Adriaanse <j@jasper.la>
+- Bump to 0.7.4
+
+* Thu Jan 26 2017 mh <mh@immerda.ch>
+- Bump to 0.7.3
+
+* Fri Dec 23 2016 Michael Mraz <michaelmraz@gmail.com>
+- Change default configs directory to /etc/consul.d and /etc/consul-template.d
+  while the old ones are still supported
+
+* Thu Dec 22 2016 Rumba <ice4o@hotmail.com>
+- Bump to 0.7.2
+
+* Wed Dec 14 2016 Rumba <ice4o@hotmail.com>
 - Bump to 0.7.1
 
-* Wed Sep 21 2016 Rumba <no@email.ext>
+* Wed Sep 21 2016 Rumba <ice4o@hotmail.com>
 - Bump to 0.7.0
 
 * Tue Jun 28 2016 Konstantin Gribov <grossws@gmail.com>
