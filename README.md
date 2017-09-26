@@ -3,7 +3,7 @@
 Tries to follow the [packaging guidelines](https://fedoraproject.org/wiki/Packaging:Guidelines) from Fedora.
 
 * Binary: `/usr/bin/consul`
-* Config: `/etc/consul/`
+* Config: `/etc/consul.d/`
 * Shared state: `/var/lib/consul/`
 * Sysconfig: `/etc/sysconfig/consul`
 * WebUI: `/usr/share/consul/`
@@ -122,7 +122,7 @@ Three RPMs:
 # Run
 
 * Install the RPM.
-* Put config files in `/etc/consul/`.
+* Put config files in `/etc/consul.d/`.
 * Change command line arguments to consul in `/etc/sysconfig/consul`.
   * Add `-bootstrap` **only** if this is the first server and instance.
 * Start the service and tail the logs `systemctl start consul.service` and `journalctl -f`.
@@ -139,3 +139,11 @@ sample configs are provided.
 # More info
 
 See the [consul.io](http://www.consul.io) website.
+
+## Backwards compatibility
+
+Earlier verisons of this package used `/etc/consul/` as the default
+configuration directory. As of 0.7.2, the default directory was changed to
+`/etc/consul.d/` in order to align with the offcial Consul docuemntation. In
+order to avoid breaking existing installations during upgrade, *both* of the
+directories will be created during package install.

@@ -11,7 +11,7 @@
 ### BEGIN INIT INFO
 # Provides:       consul
 # Required-Start: $local_fs $network
-# Required-Stop:
+# Required-Stop: $network
 # Should-Start:
 # Should-Stop:
 # Default-Start: 2 3 4 5
@@ -64,7 +64,7 @@ start() {
     local ready=0
 
     while checkpid ${pid} && [ $curwait -lt ${MAXWAIT} ] && [ $ready -ne 1 ]; do
-        if netstat -nptl | grep -q "^tcp.*:8400.*LISTEN \+${pid}\/${prog}"; then
+        if netstat -nptl | grep -q "^tcp.*:8500.*LISTEN \+${pid}\/${prog}"; then
             ready=1
         else
            sleep 1
