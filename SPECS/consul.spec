@@ -1,7 +1,7 @@
 %if 0%{?_version:1}
 %define         _verstr      %{_version}
 %else
-%define         _verstr      1.1.0
+%define         _verstr      1.4.0
 %endif
 
 Name:           consul
@@ -111,6 +111,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Apr 2 2019 alex.g alex.g@gannett.com
+- Bump version to 1.4.0
+
 * Wed Mar 6 2019 alex.g alex.g@gannett.com
 - Bump version to 1.1.0
 
