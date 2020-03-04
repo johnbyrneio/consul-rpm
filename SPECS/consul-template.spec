@@ -1,7 +1,7 @@
 %if 0%{?_version:1}
 %define         _verstr      %{_version}
 %else
-%define         _verstr      0.19.4
+%define         _verstr      0.24.1
 %endif
 
 Name:           consul-template
@@ -103,6 +103,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 04 2020 John Byrne <john@johnbyrne.io> - 0.24.1-1
+- Bumped version to 0.24.1
 * Tue Jan 09 2018 mh <blieberman@gannett.com> - 0.19.4-1
 - Bumped version to 0.19.4
 * Tue Aug 22 2017 mh <mh@immerda.ch> - 0.19.0-1
